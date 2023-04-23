@@ -17,7 +17,7 @@ jobs:
     - run: go run updater.go
     - name: commit
       run: |
-        if [ -z "$(git status --porcelain=v1)" ]; then
+        if [ -z "$(git diff -G '^[^#]')" ]; then
           echo "No changes, skipping update."
           exit 0
         fi
