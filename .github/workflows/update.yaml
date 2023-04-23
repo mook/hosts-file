@@ -1,0 +1,28 @@
+name: Update
+on:
+  push:
+    paths-ignore:
+    - 'hosts.txt'
+  schedule:
+  - cron: '15 3 * * 0' # Some random time, once a week
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/setup-go@v4
+    - uses: actions/checkout@v3
+    - run: go run updater.go
+    - name: commit
+      run: |
+        if [ -z "$(git status --porcelain=v1)" ]; then
+          echo "No changes, skipping update."
+          exit 0
+        fi
+        git config user.name 'GitHub Actions'
+        git config user.email github-actions@noreply.github.com
+        git add .
+        git commit -m "Updated at $(date --utc --rfc-email)"
+        git push
