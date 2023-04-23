@@ -1,3 +1,14 @@
+# Crashlytics
+0.0.0.0 firebase-settings.crashlytics.com
+
+# Facebook
+0.0.0.0 graph.facebook.com
+
+# Unity3D
+0.0.0.0 api.prd.identity.corp.unity3d.com
+0.0.0.0 pls.prd.mz.internal.unity3d.com
+0.0.0.0 operate-sdk-telemetry.unity3d.com
+
 # VRadio
 0.0.0.0 vradio.app
 0.0.0.0 v-radio.no-ip.org
