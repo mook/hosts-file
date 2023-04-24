@@ -55,21 +55,27 @@ func processHostsFile(contents io.Reader, source string) error {
 	foundHosts := 0
 	scanner := bufio.NewScanner(contents)
 	for scanner.Scan() {
-		line := scanner.Text()
-		if !strings.HasPrefix(line, "0.0.0.0") {
+		fieldScanner := bufio.NewScanner(strings.NewReader(scanner.Text()))
+		fieldScanner.Split(bufio.ScanWords)
+		if !fieldScanner.Scan() || fieldScanner.Text() != "0.0.0.0" {
+			// Skip line if it doesn't start with "0.0.0.0"
 			continue
 		}
-		line = strings.TrimSpace(line[len("0.0.0.0"):])
-		host := strings.Fields(line)[0]
-		if addrRE.Match([]byte(host)) {
-			fmt.Printf("%s: skipping IP address %s\n", source, host)
-			continue
-		} else if strings.HasSuffix(host, ".001com") {
-			fmt.Printf("%s: skipping invalid host name %s\n", source, host)
-			continue
+		for fieldScanner.Scan() {
+			host := fieldScanner.Text()
+			if host[0] == '#' {
+				break // The rest of the line is a comment
+			}
+			if addrRE.Match([]byte(host)) {
+				fmt.Printf("%s: skipping IP address %s\n", source, host)
+				continue
+			} else if strings.HasSuffix(host, ".001com") {
+				fmt.Printf("%s: skipping invalid host name %s\n", source, host)
+				continue
+			}
+			hosts[host] = struct{}{}
+			foundHosts++
 		}
-		hosts[host] = struct{}{}
-		foundHosts++
 	}
 	if err := scanner.Err(); err != nil {
 		return fmt.Errorf("error reading hosts: %w", err)
