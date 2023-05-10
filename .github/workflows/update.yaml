@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/setup-go@v4
     - uses: actions/checkout@v3
-    - run: go run updater.go
+    - run: go run .
     - name: commit
       run: |
         if [ -z "$(git diff -G '^[^#]')" ]; then
