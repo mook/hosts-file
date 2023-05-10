@@ -179,6 +179,11 @@ func run() error {
 		return fmt.Errorf("error reading extras.txt: %w", err)
 	}
 
+	err = addMSEdgeBlockList()
+	if err != nil {
+		return fmt.Errorf("error reading Microsoft Edge abusive list: %w", err)
+	}
+
 	err = writeHosts(sources)
 	if err != nil {
 		return fmt.Errorf("error writing hosts file: %w", err)
